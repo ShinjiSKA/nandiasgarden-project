@@ -6,7 +6,7 @@ from .models import Pizza
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'pizza/home.html')
 
 
 def order(request):
@@ -18,11 +18,14 @@ def order(request):
             created_pizza_pk = created_pizza.id
             note = 'Thanks for ordering! Your %s %s and %s pizza is on its way!' % (
                 filled_form.cleaned_data['size'], filled_form.cleaned_data['topping1'], filled_form.cleaned_data['topping2'],)
-            new_form = PizzaForm()
-            return render(request, 'order.html', {'created_pizza_pk': created_pizza_pk, 'pizzaform': new_form, 'note': note, 'multiple_form': multiple_form})
+            filled_form = PizzaForm()
+        else:
+            created_pizza_pk = None
+            note = 'Pizza order has failed. Try again.'
+        return render(request, 'pizza/order.html', {'created_pizza_pk': created_pizza_pk, 'pizzaform': filled_form, 'note': note, 'multiple_form': multiple_form})
     else:
         form = PizzaForm()
-        return render(request, 'order.html', {'pizzaform': form, 'multiple_form': multiple_form})
+        return render(request, 'pizza/order.html', {'pizzaform': form, 'multiple_form': multiple_form})
 
 
 def pizzas(request):
@@ -40,9 +43,9 @@ def pizzas(request):
             note = 'Pizzas have been ordered!'
         else:
             note = 'Order was not created, please try again'
-        return render(request, 'pizzas.html', {'note': note, 'formset': formset})
+        return render(request, 'pizza/pizzas.html', {'note': note, 'formset': formset})
     else:
-        return render(request, 'pizzas.html', {'formset': formset})
+        return render(request, 'pizza/pizzas.html', {'formset': formset})
 
 
 def edit_order(request, pk):
@@ -54,5 +57,5 @@ def edit_order(request, pk):
             filled_form.save()
             form = filled_form
             note = 'Order has been update'
-            return render(request, 'edit_order.html', {'note': note, 'pizzaform': form, 'pizza': pizza})
-    return render(request, 'edit_order.html', {'pizzaform': form, 'pizza': pizza})
+            return render(request, 'pizza/edit_order.html', {'note': note, 'pizzaform': form, 'pizza': pizza})
+    return render(request, 'pizza/edit_order.html', {'pizzaform': form, 'pizza': pizza})
